@@ -227,7 +227,6 @@ export interface FindQueryStatic<T> {
     $asc?: keyof T | Array<keyof T>;
     $desc?: keyof T | Array<keyof T>;
   };
-
   $limit?: number;
 }
 

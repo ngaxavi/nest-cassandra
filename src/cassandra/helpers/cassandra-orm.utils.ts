@@ -17,7 +17,7 @@ export function handleRetry(
                 errorCount + 1
               })...`,
               error.stack,
-              'ExpressCassandraModule',
+              'CassandraModule',
             );
             if (errorCount + 1 >= retryAttempts) {
               throw error;

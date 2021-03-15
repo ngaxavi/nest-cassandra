@@ -1,37 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
-import { Repository, InjectRepository, uuid } from '@lib/cassandra';
+import { UserRepository } from './user.repository';
+import { types } from 'cassandra-driver';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
-  ) {}
+  constructor(private readonly usersRepository: UserRepository) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.usersRepository.create(createUserDto);
-    // user.firstName = createUserDto.firstName;
-    // user.lastName = createUserDto.lastName;
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = await this.usersRepository.create(createUserDto);
     console.log(user);
 
-    return this.usersRepository.save(user).toPromise();
+    return user;
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find({}).toPromise();
+    return this.usersRepository.findAll();
   }
 
   findOne(id: any): Promise<User> {
-    console.log(id);
-    const uid = typeof id === 'string' ? uuid(id) : id;
-    return this.usersRepository.findOne({ id: uid }).toPromise();
+    const uid = types.Uuid.fromString(id);
+    return this.usersRepository.findOne(uid);
   }
 
-  async remove(id: any): Promise<void> {
-    console.log(id);
-    const uid = typeof id === 'string' ? uuid(id) : id;
-    await this.usersRepository.delete({ id: uid }).toPromise();
+  async remove(id: string): Promise<void> {
+    const uid = types.Uuid.fromString(id);
+    await this.usersRepository.delete(uid);
   }
 }

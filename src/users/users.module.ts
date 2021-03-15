@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { User } from './user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { CassandraModule } from '@lib/cassandra';
+import { UserRepository } from './user.repository';
+import { CassandraService } from '@lib/cassandra';
 
 @Module({
-  imports: [CassandraModule.forFeature([User])],
-  providers: [UsersService],
+  imports: [],
+  providers: [UsersService, UserRepository, CassandraService],
   controllers: [UsersController],
 })
 export class UsersModule {}
